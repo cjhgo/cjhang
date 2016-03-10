@@ -1,0 +1,37 @@
+{% extends 'blog/base.html' %}
+
+
+{% block content%}
+<!--BLOG POST STARTS-->
+{% for blog in blogs %}
+    {% include 'blog/blog_snippets.html' %}
+{% empty %}
+    <div class="leftblock"> 
+        <h1>No posts in blog</h1> 
+        <div class="postcontent">
+            <p>
+              <br/>还没有发布任何博客
+              Create a blog entry at '/admin/blogango/blogentry/add/'.
+            </p>
+        </div>
+    </div>
+{% endfor %}
+
+<!--BLOG POST ENDS-->
+<div class="clear"></div>
+
+{% if page_obj.has_next or page_obj.has_previous %}
+<div class="pagination"> 
+    <div class="moreinfo">
+        {% if page_obj.has_next %}
+            <a href='{% url "blogango_page" page_obj.next_page_number %}'>&laquo; Previous Entries</a>
+        {% endif %}
+        
+        {% if page_obj.has_previous %}
+            <span class='right'><a href='{% url "blogango_page" page_obj.previous_page_number %}'>Next Entries &raquo;</a></span>
+        {% endif %}
+    </div> 
+</div>
+{% endif %}
+
+{% endblock %}

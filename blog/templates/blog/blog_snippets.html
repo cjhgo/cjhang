@@ -1,0 +1,49 @@
+{%load blog_filters %}
+<div class="comment_block">
+
+  <div class="right_panel">
+    <a href="{{ blog.get_absolute_url }}" class='noline'>
+      <h1 class="post_title">{{ blog.title }}</h1>
+    </a>
+
+    <h6 class="posted_by">By : 
+      <a href="{{ blog.created_by }}">
+        {{ blog.created_by }}
+      </a>
+      {% if blog.created_by.teammember.tag_line %}
+         - 
+         {{ blog.created_by.teammember.tag_line }} 
+      {% endif %}
+    </h6>
+
+    {% if post_detail %}
+      <p>{{ blog.text|safe }}</p>
+    {% else %}
+      <p>{{ blog.text|truncatewords_html:100|safe }} </p>
+    {% endif %}
+
+    {% if not post_detail %}
+      <a href="{{ blog.get_absolute_url }}" class="moreinfo">more info..</a>
+    {% endif %}
+
+    <div class="topics">
+    {% for tag in blog.tags.all %}
+      {% if forloop.first %}Topics : {% endif %}
+      <a href="{% url "blog:blog_tag_details" tag.slug %}">{{ tag.name }}</a>
+    {% endfor %}
+
+    {% related_posts blog as related_posts %}
+    {% if related_posts %}
+    <h4>You may want to read</h4>
+    <ul>
+    {% for post in related_posts %}
+        <li>
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+
+    </div>
+  </div>
+</div>
