@@ -1,0 +1,78 @@
+{% extends "blog/admin/base.html" %}
+{% block title %}
+    {% if blogentry %}
+        Editing blogentry:: {{ form.initial.title }}
+    {% else %}
+        New Entry
+    {% endif %}
+    &#8203;{{ title_suffix }}
+{% endblock %}
+{% block page_head %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/css/base.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/css/forms.css" />
+
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="{{STATIC_URL}}admin/js/core.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}admin/js/calendar.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}admin/js/admin/DateTimeShortcuts.js"></script>
+{% endblock %}
+
+{% block extra_script %}
+    <script>
+        $(document).ready(function(){
+            var tags_json = '{{tags_json|safe}}';
+            var tag_list = JSON.parse(tags_json);
+            $("#id_tags").autocomplete(tag_list, {
+                multiple: true
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block subnavbar %}
+    <ul class="ctxnavbar">
+      <li{% if 'page' not in request.GET %} class="active"{% endif %}>
+          <a href="{{ request.path }}">Entry</a>
+      </li>
+      <li{% if 'page' in request.GET %} class="active"{% endif %}>
+          <a href="{{ request.path }}?page">Page</a>
+      </li>
+    </ul>
+{% endblock %}
+
+{% block contents %}
+      <div class="notification-messages">      
+	    {% if 'done' in request.GET %}
+	        <div class="message message-info">Blog entry saved successfully</div>
+	    {% endif %}
+      </div>
+    {% if blogentry %}
+        <h1>
+            {{ blogentry.title }} &mdash; &#8203; Edit Entry
+            {% if blogentry.is_published %}
+                <a href="{{ blogentry.get_absolute_url }}" class="preview">{{ _("View Entry") }}</a>
+            {% else %}
+                <a href="{{ blogentry.get_absolute_url }}?preview" class="preview" target="_blank">{{ _("Preview Entry") }}</a>
+            {% endif %}
+        </h1>
+    {% endif %}
+    {% if form.errors %}
+        Please correct the following errors:
+        <ul class="errors">
+            {% for field, error in form.errors.iteritems %}
+                <li>{{ field }} {{ error.as_text }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="POST">
+        {% csrf_token %}
+		{{form.as_p}}
+		<div class="secondary">
+		  <div class="actions">
+		    <input type="submit" value="{% if blogentry.is_published %}Unpublish{% else %}Save{% endif %}" name="save">
+		    <input type="submit" value="Save and Publish" name="publish">
+		    <input type="reset" value="Cancel" name="cancel">
+		  </div>
+		</div>
+	</form>
+{% endblock %}

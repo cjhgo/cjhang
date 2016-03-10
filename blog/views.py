@@ -127,8 +127,48 @@ class AdminDashboardView(StaffMemReqMixin,generic.TemplateView):
         return context
 admin_dashboard = AdminDashboardView.as_view()
 
+class AdminCreateUpdateCommon(object):
+    model = Blog
+    form_class = myforms.BlogForm
+    template_name = 'blog/admin/edit_blog.html'
+    def form_valid(self,form):
+        return super(AdminCreateUpdateCommon,self).form_valid(form)
+
+    def get_context_data(self,*args,**kwargs):
+        context = super(AdminCreateUpdateCommon,self).get_context_data(*args,**kwargs)
+        tags_josn = json.dumps([each.name for each in Tag.objects.all()])
+        context['tags_josn'] = tags_josn
+        return context
+    def get_success_ful(self):
+        blog = self.object
+        if blog.is_published:
+            publish_date = blog.publish_date
+            return reverse('blog:blog_detail',
+                            kwargs={'year':publish_date.year,
+                                    'month':publish_date.month,
+                                    'day':publish_date.day,
+                                    'slug':blog.slug
+                            })
+        else:
+            return reverse('blog:blog_admin_blog_edit',
+                            args=[blog.id])+'?done'
+
+class AdminBlogView(StaffMemReqMixin,AdminCreateUpdateCommon,generic.edit.CreateView):
+    # def get_initial(self):
+        # initial = super(AdminEntryView, self).get_initial()
+        # initials = {'created_by': self.request.user.id,
+        #             'publish_date': datetime.now()}
+        # initial.update(initials)
+        # return initial
+    def get_initial(self):
+        initial = super(AdminBlogView,self).get_initial()
+        initials = {'created_by':self.request.user.id,
+                    'publish_date':datetime.now()}
+        initial.update(initials)
+        return initial
+
 admin_blogs_manage = AdminDashboardView.as_view()
-admin_blog_new = AdminDashboardView.as_view()
+admin_blog_new = AdminBlogView.as_view()
 admin_blog_edit = AdminDashboardView.as_view()
 admin_comments_manage = AdminDashboardView.as_view()
 admin_meta_edit = AdminDashboardView.as_view()
