@@ -12,10 +12,10 @@
       </div>
       <h2>{{ _('Quickstart') }}</h2>
       <ul>
-        <li><a href="">{{ _("New Entry") }}</a>
-        <li><a href="">{{ _("Moderate Comments") }}</a>
-        <li><a href="">{{ _("Manage Entries") }}</a>
-        <li><a href="">{{ _("Configure blogango") }}</a>
+        <li><a href="{% url "blog:blog_admin_blog_new" %}">{{ _("New Entry") }}</a>
+        <li><a href="{% url "blog:blog_admin_comments_manage" %}">{{ _("Moderate Comments") }}</a>
+        <li><a href="{% url "blog:blog_admin_blogs_manage"%}">{{ _("Manage blogs") }}</a>
+        <li><a href="{% url "blog:blog_admin_meta_edit"%}">{{ _("Configure blogango") }}</a>
       </ul>
     </div>
     <div class="links">
@@ -31,14 +31,14 @@
       {% endfor %}
       </ul>
       {% endif %}
-      {% if recent_entries %}
+      {% if recent_blogs %}
       <h2>{{ _("Recent Posts") }}</h2>
       <ul class="last_posts">
-      {% for post in recent_entries %}
+      {% for blog in recent_blogs %}
         <li>
-            <a href="{{ post.get_edit_url }}">{{ post.title }}</a>
-            <span class="meta">[<a href="{{ post.get_absolute_url }}">{{ _('show') }}</a>]</span>,
-          {{ post.created_on }}
+            <a href="{{ blog.get_edit_url }}">{{ blog.title }}</a>
+            <span class="meta">[<a href="{{ blog.get_absolute_url }}">{{ _('show') }}</a>]</span>,
+          {{ blog.created_on }}
       {% endfor %}
       </ul>
       {% endif %}

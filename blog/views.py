@@ -127,6 +127,12 @@ class AdminDashboardView(StaffMemReqMixin,generic.TemplateView):
         return context
 admin_dashboard = AdminDashboardView.as_view()
 
+admin_blogs_manage = AdminDashboardView.as_view()
+admin_blog_new = AdminDashboardView.as_view()
+admin_blog_edit = AdminDashboardView.as_view()
+admin_comments_manage = AdminDashboardView.as_view()
+admin_meta_edit = AdminDashboardView.as_view()
+
 
 #Helper method
 def _is_blog_installed():

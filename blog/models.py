@@ -117,7 +117,7 @@ class Blog(models.Model):
                                 'slug':self.slug,
                                 })
     def get_edit_url(self):        
-        return reverse('blog_admin_blog_edit',args=[self.id])
+        return reverse('blog:blog_admin_blog_edit',args=[self.id])
     def get_num_comments(self):
         cmnt_count = Comment.objects.filter(comment_for=self,is_spam=False).count()
         return cmnt_count

@@ -29,32 +29,32 @@
   </div>
   <div class="body">
     <ul class="navbar standalonebar">
-      {% url "blogango_admin_dashboard" as dashboard_url %}
+
+      {% url "blog:blog_admin_dashboard" as dashboard_url %}
       <li {% if request.path == dashboard_url %}class="active"{% endif %}>
           <a href="{{ dashboard_url }}">{{ _("Dashboard") }}</a>
       </li>
-      {% url "blogango_admin_entry_new" as write_url %}
+
+      {% url "blog:blog_admin_blog_new" as write_url %}
       <li {% if request.path == write_url %}class="active"{% endif %}>
           <a href="{{ write_url }}">{{ _("Write") }}</a>
       </li>
-      {% url "blogango_admin_entry_manage" as manage_entry_url %}
-      {% if author %}
-          {% url "blogango_admin_author_entry_manage" author.username as manage_author_entry_url %}
-      {% endif %}
-      <li {% if request.path == manage_entry_url or request.path == manage_author_entry_url %}class="active"{% endif %}>
-          <a href="{{ manage_entry_url }}">{{ _("Manage") }}</a>
+
+      {% url "blog:blog_admin_blogs_manage" as manage_blogs_url %}    
+      <li {% if request.path == manage_blogs_url%}class="active"{% endif %}>
+          <a href="{{ manage_blogs_url }}">{{ _("Manage") }}</a>
       </li>
-      {% url "blogango_admin_comments_manage" as manage_comments_url %}
-      {% if blog_entry %}
-          {% url "blogango_admin_entry_comments_manage" blog_entry.pk as manage_entry_comments_url %}
-      {% endif %}
-      <li {% if request.path == manage_comments_url or request.path == manage_entry_comments_url %}class="active"{% endif %}>
+
+      {% url "blog:blog_admin_comments_manage" as manage_comments_url %}
+      <li {% if request.path == manage_comments_url%}class="active"{% endif %}>
           <a href="{{ manage_comments_url }}">{{ _("Comments") }}</a>
       </li>
-      {% url "blogango_admin_edit_preferences" as edit_preferences_url %}
-      <li {% if request.path == edit_preferences_url %}class="active"{% endif %}>
-          <a href="{{ edit_preferences_url }}">{{ _("Options") }}</a>
+
+      {% url "blog:blog_admin_meta_edit" as edit_meta_url %}
+      <li {% if request.path == edit_meta_url %}class="active"{% endif %}>
+          <a href="{{ edit_meta_url }}">{{ _("Options") }}</a>
       </li>
+
     </ul>
     {% block subnavbar %}{% endblock %}
     <div class="contents">
@@ -64,7 +64,7 @@
   <div class="footer">
     <p>
         <a href="http://{{ site.domain }}/">{{ site.name }}</a>
-        Powered by blogango | &copy; 2010 by {{ site.name }}
+        Powered by blog:blog | &copy; 2010 by {{ site.name }}
     </p>
   </div>
 </body>
