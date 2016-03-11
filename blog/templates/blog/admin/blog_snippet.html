@@ -1,0 +1,45 @@
+<tr {% if not blog.is_published %} class="draft"{% endif %}>
+    <td class="title">
+        <a href="{{ blog.get_edit_url }}">
+            {% if not blog.is_published %}
+                <em>{{ blog.title }}</em>
+            {% else %}
+                {{ blog.title }}
+            {% endif %}
+        </a>
+        <span class="meta">
+            [<a href="{{ blog.get_edit_url }}">edit</a>]
+        </span>
+        {% if blog.is_published %}
+            <span class="meta">
+                [<a href="{{ blog.get_absolute_url }}">show</a>]
+            </span>
+        {% else %}
+            <span class="meta">
+                [<a href="{{ blog.get_absolute_url }}?preview">preview</a>]
+            </span>
+        {% endif %}
+    </td>
+    <td class="author">
+        <a href="">
+            {{ entry.created_by }}
+        </a>
+    </td>
+    <td class="category">
+    {% for tag in blog.tags.all %}
+          <a href="">{{ tag.name }}</a>
+    {% endfor %}
+    </td>
+    <td class="comments">
+        <a href="{% url "blog:blog_admin_blog_comments_manage" blog.pk %}">
+            {{ blog.get_num_comments }}
+        </a>
+    </td>
+    <td class="date">
+        {% ifequal blog.created_on.year 9999 %}
+          Not published yet.
+        {% else %}
+          {{ blog.created_on }}
+        {% endifequal %}
+    </td>
+</tr>

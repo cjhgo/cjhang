@@ -20,18 +20,5 @@
 <!--BLOG POST ENDS-->
 <div class="clear"></div>
 
-{% if page_obj.has_next or page_obj.has_previous %}
-<div class="pagination"> 
-    <div class="moreinfo">
-        {% if page_obj.has_next %}
-            <a href='{% url "blogango_page" page_obj.next_page_number %}'>&laquo; Previous Entries</a>
-        {% endif %}
-        
-        {% if page_obj.has_previous %}
-            <span class='right'><a href='{% url "blogango_page" page_obj.previous_page_number %}'>Next Entries &raquo;</a></span>
-        {% endif %}
-    </div> 
-</div>
-{% endif %}
-
+<a href="https://zh.wikipedia.org/wiki/'%E8%8D%89%E7%94%B5%E9%A3%8E%E6%89%87'">click me</a>
 {% endblock %}

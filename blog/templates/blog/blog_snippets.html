@@ -26,24 +26,6 @@
       <a href="{{ blog.get_absolute_url }}" class="moreinfo">more info..</a>
     {% endif %}
 
-    <div class="topics">
-    {% for tag in blog.tags.all %}
-      {% if forloop.first %}Topics : {% endif %}
-      <a href="{% url "blog:blog_tag_details" tag.slug %}">{{ tag.name }}</a>
-    {% endfor %}
-
-    {% related_posts blog as related_posts %}
-    {% if related_posts %}
-    <h4>You may want to read</h4>
-    <ul>
-    {% for post in related_posts %}
-        <li>
-            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
-        </li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-
-    </div>
+    
   </div>
 </div>

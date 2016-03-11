@@ -7,11 +7,11 @@ from blog.models import Blog, BlogRoll,Comment
 class BlogForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
         super(BlogForm,self).__init__(*args,**kwargs)
-        self.fields['publish_date'].widget = widgets.AdminSplitDateTime()
+        # self.fields['publish_date'].widget = widgets.AdminSplitDateTime()
         # self.fields['publish_date'].input_formats = ['%Y-%m-%d %H:%M:%S',]
     class Meta:
         model = Blog
-        exclude = ['slug','summary']
+        exclude = ['slug','summary','is_published']
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment

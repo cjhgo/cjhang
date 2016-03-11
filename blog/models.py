@@ -23,7 +23,7 @@ class BlogMetaManager(models.Manager):
 class BlogMeta(models.Model):
     title = models.CharField(max_length=100)
     tag_line = models.CharField(max_length=100)
-    entries_per_page = models.IntegerField(default=10)
+    blogs_per_page = models.IntegerField(default=10)
     recents = models.IntegerField(default=5)
     recent_comments = models.IntegerField(default=5)
 
@@ -35,7 +35,7 @@ class BlogMeta(models.Model):
     def save(self, *args, **kwargs):
 
         """There should not be more than one Blog object"""
-        if Blog.objects.count() == 1 and not self.id:
+        if BlogMeta.objects.count() == 1 and not self.id:
             raise Exception("Only one blogmeta object allowed.")
         # Call the "real" save() method.
         super(BlogMeta, self).save(*args, **kwargs)
@@ -54,7 +54,7 @@ class Blog(models.Model):
     
     """
     title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100)
+    slug = models.SlugField(max_length=100,allow_unicode=True)
     text = MarkupField(default_markup_type=getattr(settings,
                                                    'DEFAULT_MARKUP_TYPE',
                                                    'plain'),
@@ -86,7 +86,10 @@ class Blog(models.Model):
             self.title = _infer_title_or_slug(self.text.raw)
         
         if self.slug is None or self.slug == '':
-            self.slug = slugify(self.title)
+            # import urllib
+            # temp = self.title.encode('utf-8')
+            # self.slug = urllib.quote(temp)
+            self.slug = self.title
         i = 1
         while True:
             created_slug = self.create_slug(self.slug,i)

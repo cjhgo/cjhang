@@ -1,0 +1,24 @@
+{% extends "blog/admin/base.html" %}
+{% block title %}{{ _("Manage Blogs") }}{% endblock %}
+{% block contents %}
+    <h1>{{ _("Manage Blogs") }}</h1>
+    <table class="bloglist">
+        <tbody>
+            <tr>
+                <th class="title">Title</th>
+                <th class="author">Author</th>
+                <th class="category">Category</th>
+                <th class="comments">Comments</th>
+                <th class="date">Date</th>
+            </tr>
+            {% for blog in blogs %}
+                {% include "blog/admin/blog_snippet.html" %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <form action="{% url "blog:blog_admin_blog_new" %}" method="get">
+        <div class="actions">
+            <input type="submit" value="{{ _("New Blog") }}">
+        </div>
+    </form>
+{% endblock %}

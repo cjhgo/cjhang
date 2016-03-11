@@ -21,7 +21,7 @@ from django.views.generic.dates import MonthArchiveView
 from django.views import generic
 from taggit.models import Tag
 
-from blog.models import Blog, Comment, BlogRoll
+from blog.models import BlogMeta,Blog, Comment, BlogRoll
 from blog import forms as myforms
 # from blogango.conf.settings import AKISMET_COMMENT, AKISMET_API_KEY
 # from blogango.akismet import Akismet, AkismetError
@@ -33,10 +33,10 @@ class IndexView(generic.ListView):
     context_object_name = 'blogs'
 
     def get(self, request, *args, **kwargs):
-        blog = Blog.objects.get_blog()
-        if not blog:
+        blogmeta = BlogMeta.objects.get_blogmeta()
+        if not blogmeta:
             return HttpResponseRedirect(reverse('blog:blog_install'))
-        self.kwargs['blog'] = blog
+        self.kwargs['blogmeta'] = blogmeta
         return super(IndexView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -132,6 +132,18 @@ class AdminCreateUpdateCommon(object):
     form_class = myforms.BlogForm
     template_name = 'blog/admin/edit_blog.html'
     def form_valid(self,form):
+        if "publish" in self.request.POST:
+            # print 2222
+            # print self.request.POST
+            # print form.instance.is_published
+            form.instance.is_published = True
+            # print form.instance.is_published
+        elif "save" in self.request.POST:
+            # print 1111
+            # print self.request.POST
+            # print form.instance.is_published
+            form.instance.is_published = False
+            # print form.instance.is_published
         return super(AdminCreateUpdateCommon,self).form_valid(form)
 
     def get_context_data(self,*args,**kwargs):
@@ -139,7 +151,7 @@ class AdminCreateUpdateCommon(object):
         tags_josn = json.dumps([each.name for each in Tag.objects.all()])
         context['tags_josn'] = tags_josn
         return context
-    def get_success_ful(self):
+    def get_success_url(self):
         blog = self.object
         if blog.is_published:
             publish_date = blog.publish_date
@@ -152,14 +164,19 @@ class AdminCreateUpdateCommon(object):
         else:
             return reverse('blog:blog_admin_blog_edit',
                             args=[blog.id])+'?done'
+class AdminBlogsMangeView(StaffMemReqMixin,generic.ListView):
+    template_name = 'blog/admin/manage_blogs.html'
+    model = Blog
+    context_object_name = 'blogs'
+    def get_queryset(self):
+        blogs = Blog.default.all()
+        return  blogs
+    def get_context_data(self, **kwargs):
+        context = super(AdminBlogsMangeView,self).get_context_data(**kwargs)
+        return  context
+admin_blogs_manage = AdminBlogsMangeView.as_view()
 
 class AdminBlogView(StaffMemReqMixin,AdminCreateUpdateCommon,generic.edit.CreateView):
-    # def get_initial(self):
-        # initial = super(AdminEntryView, self).get_initial()
-        # initials = {'created_by': self.request.user.id,
-        #             'publish_date': datetime.now()}
-        # initial.update(initials)
-        # return initial
     def get_initial(self):
         initial = super(AdminBlogView,self).get_initial()
         initials = {'created_by':self.request.user.id,
@@ -167,7 +184,6 @@ class AdminBlogView(StaffMemReqMixin,AdminCreateUpdateCommon,generic.edit.Create
         initial.update(initials)
         return initial
 
-admin_blogs_manage = AdminDashboardView.as_view()
 admin_blog_new = AdminBlogView.as_view()
 admin_blog_edit = AdminDashboardView.as_view()
 admin_comments_manage = AdminDashboardView.as_view()

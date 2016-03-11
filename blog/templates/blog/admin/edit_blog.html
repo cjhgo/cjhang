@@ -66,7 +66,45 @@
     {% endif %}
     <form method="POST">
         {% csrf_token %}
-		{{form.as_p}}
+		<div class="formbox formbox-title">
+              <h3><label for="id_title">Title</label></h3>
+              {{ form.title }}
+        </div>
+        <div class="formbox">
+              <h3><label for="id_text">Text</label></h3>
+              {{ form.text }}
+        </div>
+        <div class="formbox">
+              <h3><label for="id_text_markup_type">Markup Parser</label></h3>
+              {{ form.text_markup_type }}
+        </div>
+        <div class="formbox">
+              <h3><label for="id_tags">Tags</label></h3>
+              {{ form.tags }}
+        </div>
+        <div class="formbox toggleable collapsed">
+              <h3><label for="id_created_by">Author</label></h3>
+              {{ form.created_by }}
+        </div>  
+        <div class="formbox">
+              <h3><label for="id_published_date">Publish date</label></h3>
+              {{ form.publish_date }}
+        </div>
+        <div class="formbox toggleable collapsed">
+              <h3><label for="id_meta_keywords">Keywords</label></h3>
+              {{ form.meta_keywords }}
+        </div>
+        <div class="formbox toggleable collapsed">
+              <h3><label for="id_meta_description">Description</label></h3>
+              {{ form.meta_description }}
+        </div>
+        <div class="formbox">
+              <h3><label for="id_comments_allowed">Allow Comments?</label></h3>
+              {{ form.comments_allowed }}
+        </div>
+        {% if 'page' in request.GET %}
+            <input type="hidden" name="page" value="1" />
+        {% endif %}
 		<div class="secondary">
 		  <div class="actions">
 		    <input type="submit" value="{% if blogentry.is_published %}Unpublish{% else %}Save{% endif %}" name="save">
