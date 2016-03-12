@@ -20,5 +20,19 @@
 <!--BLOG POST ENDS-->
 <div class="clear"></div>
 
-<a href="https://zh.wikipedia.org/wiki/'%E8%8D%89%E7%94%B5%E9%A3%8E%E6%89%87'">click me</a>
+{% if page_obj.has_next or page_obj.has_previous %}
+<div class="pagination">
+    <div class="moreinfo">
+       {% if page_obj.has_previous %}
+{#            <a href="?page={{ page_obj.previous_page_number }}"></a>#}
+            <a href="{% url "blog:blog_page" page_obj.previous_page_number%}">&laquo; Previous Blogs</a>
+        {% endif %}
+        {% if page_obj.has_next %}
+{#            <a href="?page={{ page_obj.next_page_number }}"></a>#}
+            <a href="{% url "blog:blog_page" page_obj.next_page_number%}">Next Blogs &raquo;</a>
+        {% endif %}
+
+    </div>
+</div>
+{% endif %}
 {% endblock %}

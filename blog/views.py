@@ -32,6 +32,9 @@ class IndexView(generic.ListView):
     template_name = 'blog/index.html'
     context_object_name = 'blogs'
 
+    def get_paginate_by(self, queryset):
+        paginate_by = self.kwargs['blogmeta'].blogs_per_page
+        return  paginate_by
     def get(self, request, *args, **kwargs):
         blogmeta = BlogMeta.objects.get_blogmeta()
         if not blogmeta:
@@ -49,17 +52,18 @@ class DetailView(generic.DetailView):
     context_object_name = 'blog'
     def get_object(self,queryset=None):
         if 'year' in self.kwargs:
-                entry = Blog.objects.get(created_on__year=self.kwargs['year'],
-                                          created_on__month=self.kwargs['month'],
-                                          created_on__day=self.kwargs['day'],
-                                          slug=self.kwargs['slug'])            
-
-        if not entry.is_published:
-            if self.request.user.is_staff and 'preview' in self.request.GET:
+            blog = Blog.default.get(created_on__year=self.kwargs['year'],
+                                    created_on__month=self.kwargs['month'],
+                                    created_on__day=self.kwargs['day'],
+                                    slug=self.kwargs['slug'])
+        else:
+            blog = Blog.default.get(slug=self.kwargs['slug'])
+        if not blog.is_published:
+            if 'preview' in self.request.GET:
                 pass
             else:
                 raise Http404
-        return entry
+        return blog
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
 
@@ -185,11 +189,66 @@ class AdminBlogView(StaffMemReqMixin,AdminCreateUpdateCommon,generic.edit.Create
         return initial
 
 admin_blog_new = AdminBlogView.as_view()
-admin_blog_edit = AdminDashboardView.as_view()
-admin_comments_manage = AdminDashboardView.as_view()
-admin_meta_edit = AdminDashboardView.as_view()
+class AdminBlogEditView(StaffMemReqMixin,AdminCreateUpdateCommon,generic.UpdateView):
+    pass
+admin_blog_edit = AdminBlogEditView.as_view()
 
+class AdminCommentsManageView(StaffMemReqMixin,generic.ListView):
+    model = Comment
+    template_name = "blog/admin/manage_comments.html"
+    context_object_name = "comments"
+    def get_queryset(self):
+        blog = None
+        if "blog_id" in self.kwargs:
+            blog = get_object_or_404(Blog,pk=self.kwargs["blog_id"])
+        if "blocked" in self.request.GET:
+            comments = \
+                Comment.default.filter(Q(is_spam=True) | Q(is_public=False)).order_by('-created_on')
+        else:
+            comments = Comment.objects.order_by('-created_on')
+        if blog:
+            comments = comments.filter(comment_for=blog)
+        return comments
+    def get_context_data(self,*args,**kwargs):
+        context = super(AdminCommentsManageView,self).get_context_data(*args,**kwargs)
+        blog = None
+        if "blog_id" in self.kwargs:
+            blog = get_object_or_404(Blog,pk=self.kwargs["blog_id"])
+        context["blog"] = blog
+        return  context
+    def get_paginate_by(self, queryset):
+        paginate_by = getattr(settings,"COMMENT_PER_PAGE",20)
+        return  paginate_by
 
+admin_comments_manage = AdminCommentsManageView.as_view()
+class AdminMetaEditView(StaffMemReqMixin,generic.UpdateView):
+    model = BlogMeta
+    form_class = myforms.BlogMetaForm
+    template_name = "blog/admin/edit_blogmeta.html"
+    success_url = "?done"
+
+    def get_object(self, *args,**kwargs):
+        return BlogMeta.objects.get_blogmeta()
+admin_meta_edit = AdminMetaEditView.as_view()
+
+@staff_member_required
+@require_POST
+def admin_comment_approve(request):
+    comment_id = request.POST.get("comment_id",None)
+    comment = get_object_or_404(Comment,pk=comment_id)
+    comment.is_spam = False
+    comment.is_public = True
+    comment.save()
+    return HttpResponse(comment.pk)
+@staff_member_required
+@require_POST
+def admin_comment_block(request):
+    comment_id = request.POST.get("comment_id",None)
+    comment = get_object_or_404(Comment,pk=comment_id)
+    comment.is_spam = True
+    comment.is_public = False
+    comment.save()
+    return HttpResponse(comment.pk)
 #Helper method
 def _is_blog_installed():
     return Blog.objects.get_blog()

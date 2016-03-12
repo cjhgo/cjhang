@@ -155,7 +155,7 @@ class Comment(models.Model):
     user_ip = models.GenericIPAddressField(null=True)
     user_agent = models.CharField(max_length=200, default='')
 
-    # default = models.Manager()
+    default = models.Manager()
     objects = CommentManager()
 
     class Meta:
