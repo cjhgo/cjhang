@@ -46,19 +46,24 @@
 <!--COMMENT BLOCK STARTS-->
 <h2 style="clear:both;">Comments</h2>
 {% for comment in comments %}
-    <a name="comment-{{ comment.pk }}">
+    <a name="comment-{{ comment.created_on|date:"U" }}">
     <div id="comments" class="commentor_block">
 	    <div class="leftnpanel">
 	        <span class="commentor">
 	           {% if comment.user_url %}
-	               <a href='{{ comment.user_url }}' rel='nofollow' target='_blank'>{{ comment.user_name }}</a>
+	               <a href='{{ comment.user_url }}' rel='nofollow' target='_blank'>
+                       {{ comment.user_name }}
+                   </a>
 	           {% else %}
 	               {{ comment.user_name }}
 	           {% endif %}
 	        </span>
             <span class="postdate">
-                <a href="#comment-{{ comment.pk }}">{{ comment.created_on|date:'jS N, Y' }}</a>
-            </span><br/>
+                <a href="#comment-{{ comment.created_on|date:"U" }}">
+                    {{ comment.created_on|date:'jS N, Y' }}
+                </a>
+            </span>
+            <br/>
 	        <div class="comment_post">
 	            <p>{{ comment.text|striptags|urlize|linebreaks }}</p>
 	        </div>
@@ -68,6 +73,7 @@
 	    </div>
 	    <div class="clear"></div>
     </div>
+    </a>
 {% endfor %}
 <!--COMMENT BLOCK ENDS-->
 {% endif %}
@@ -81,9 +87,12 @@
         <form action="." method="post">
             {% csrf_token %}
             <fieldset>
-                <a href="#tips">fdfs</a>
                 <legend>Post a comment</legend>
-                {{comment_form.as_p}}
+                Name : {{comment_form.user_name.errors}}<br/> {{comment_form.user_name}} <br/>
+                Email : {{comment_form.email_id.errors}} <br/> {{comment_form.email_id}} <br/>
+                Your site url: {{comment_form.user_url.errors}} <br/> {{comment_form.user_url}} <br/>
+                Comment : {{comment_form.text.errors}} <br/> {{comment_form.text}} <br/>
+                Reply_to:{{comment_form.reply_to.errors}}<br/>{{comment_form.reply_to}}<br/>
                 <input type="submit" value="Submit" />
             </fieldset>
         </form>	    

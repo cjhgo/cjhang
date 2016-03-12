@@ -76,9 +76,11 @@ class DetailView(generic.DetailView):
             init_data['email'] = self.request.session.get("email", "")
             init_data['url'] = self.request.session.get("url", "")
         blog = context['blog']
+        reply_to_list = [temp.pk for temp in Comment.objects.filter(comment_for=blog.pk)]
         comment_f = myforms.CommentForm()
         comments = Comment.objects.filter(comment_for=blog, is_spam=False)
         payload = {'comments': comments,'comment_form': comment_f}
+        comment_f.fields['reply_to'].queryset = Comment.default.filter(pk__in=reply_to_list)
         context.update(payload)
         return context
     def post(self,*args,**kwargs):
@@ -91,10 +93,11 @@ class DetailView(generic.DetailView):
             comment = Comment()
             post_data = comment_f.cleaned_data
             comment.text = post_data['text']
-            comment.user_name = post_data['user_name']
             comment.reply_to = post_data['reply_to']
             comment.email_id = post_data['email_id']
             comment.comment_for = self.object
+            comment.user_name = post_data['user_name']
+            comment.user_url = post_data['user_url']
             comment.user_ip = request.META['REMOTE_ADDR']
             comment.user_agent = request.META['HTTP_USER_AGENT']
             comment.is_public = getattr(settings, 'AUTO_APPROVE_COMMENTS',

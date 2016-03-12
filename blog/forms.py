@@ -13,10 +13,6 @@ class BlogForm(forms.ModelForm):
         model = Blog
         exclude = ['slug','summary','is_published']
 class CommentForm(forms.ModelForm):
-    def __init__(self,*args,**kwargs):
-        super(CommentForm,self).__init__(*args,**kwargs)
-        reply_to_list = [temp.pk for temp in Comment.objects.filter(comment_for=self.instance.pk)]
-        self.fields['reply_to'].queryset = Comment.default.filter(pk__in=reply_to_list)
     class Meta:
         model = Comment
         fields = ['text','user_name','user_url','email_id','reply_to']
