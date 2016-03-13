@@ -8,7 +8,7 @@ urlpatterns = [
     #page urlconf
     url(r'^page(?P<page>[0-9]+)/$',views.index,name='blog_page'),
     url(r'^install/$', views.install_blog, name='blog_install'),
-    url(r'^(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>[-\w%]+)/$',
+    url(r'^(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>.+)/$',
         views.detail,name='blog_detail'),
     # url(r'^(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>[-\w]+)/'+\
     #     r'#comment-(?P<cmnt_id>[-\w]+)$',
