@@ -7,9 +7,10 @@
   </title>
     <link href="{{ STATIC_URL }}blog/css/as_blog_styles.css" rel="stylesheet" type="text/css" />
     <link href="{{ STATIC_URL }}blog/css/prettify.css" rel="stylesheet" type="text/css" />
-    <link href='http://fonts.useso.com/css?family=Droid+Serif:regular,bold&subset=latin' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.useso.com/css?family=Lobster' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.useso.com/css?family=Molengo&subset=latin' rel='stylesheet' type='text/css'>
+{#    http://fonts.useso.com#}
+    <link href='{{ FONT_URL }}/css?family=Droid+Serif:regular,bold&subset=latin' rel='stylesheet' type='text/css'>
+    <link href='{{ FONT_URL }}/css?family=Lobster' rel='stylesheet' type='text/css'>
+    <link href='{{ FONT_URL }}/css?family=Molengo&subset=latin' rel='stylesheet' type='text/css'>
 
 </head>
 <body >
@@ -17,19 +18,23 @@
 <div id="mainpage_bg">
   <!--PAGE CONTAINER STARTS-->
   <div id="page_container">
+  {% comment %}
     <!-- HEADER STARTS HERE -->
     <div id="header">
-      <a href="{% url 'blog:index' %}">
-        <img src="{{ STATIC_URL }}blog/images/blog_logo.png" width="206" height="67" alt="cjhan blog" />
-      </a>
-      <h2 class="message">
-        to overcome cognitive biases and practice the art of human rationality. 
-        </br>
-        to reach mastery in computer programming and use my expertise to make people’s lives more fulfilling.
-      </h2>
+      <div id="header-inner">
+        <a href="{% url 'blog:index' %}">
+            <img src="{{ STATIC_URL }}blog/images/blog_logo.png" width="206" height="67" alt="cjhan blog" />
+        </a>
+        <h2 class="message">
+            to overcome cognitive biases and practice the art of human rationality.
+            </br>
+            to reach mastery in computer programming and use my expertise to make people’s lives more fulfilling.
+        </h2>
+      </div>
     </div>
     <!-- HEADER ENDS HERE -->
     <!-- BREADCRUMBS STARTS HERE -->
+
     <div id="breadcrumbs">
       <ul id="crumbs">
         <li><a href="/" rel="nofollow">Home</a></li>
@@ -42,8 +47,54 @@
     </div>
     <!-- BREADCRUMBS ENDS HERE -->
     <!-- CONTENT BLOCK STARTS HERE -->
+    {% endcomment %}
     <div id="content_block">
       <div class="leftpanel">
+        <div class="site-meta">
+            <div class="site-logo">
+                <a rel="start" class="brand" href="/" style="opacity: 1;">
+                    <span class="logo-line-before"><i></i></span>
+                    <span class="site-title" style="opacity: 1; top: 0px;">cjhang blog</span>
+                    <span class="logo-line-after"><i></i></span>
+                </a>
+            </div>
+            <nav class="site-nav site-nav-on">
+                <ul class="menu menu-left" id="menu">
+        <li class="menu-item menu-item-home menu-item-active" style="opacity: 1; transform: translateY(0px);">
+            <a rel="section" href="/">
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br>
+              首页
+            </a>
+        </li>
+        <li class="menu-item menu-item-archives" style="opacity: 1; transform: translateY(0px);">
+          <a rel="section" href="/archive">
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br>
+            归档
+          </a>
+        </li>
+        <li class="menu-item menu-item-tags" style="opacity: 1; transform: translateY(0px);">
+          <a rel="section" href="/tags">
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br>
+            标签
+          </a>
+        </li>
+        <li class="menu-item menu-item-search" style="opacity: 1; transform: translateY(0px);">
+          <a class="st-search-show-outputs" href="#">
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+              搜索
+          </a>
+        </li>
+    </ul>
+                <div class="site-search">
+                    <form class="site-search-form">
+                        <input type="text" class="st-search-input st-default-search-input" id="st-search-input" autocomplete="off" autocorrect="off" autocapitalize="off">
+                    </form>
+                </div>
+            </nav>
+        </div>
+      </div>
+      <div class="rightpanel">
+
         {% block content %}
 
         {% endblock %}

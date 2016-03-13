@@ -1,0 +1,43 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+    {{block.super}} - Tagged with {{ tag.name }}
+{% endblock %}
+
+
+
+{% block content %}
+	{% for blog in blogs %}
+	    {% include 'blog/blog_snippets.html' %}
+	{% empty %}
+	    <div class="leftblock"> 
+	        <h1>No blog with this tag</h1>
+	        <div class="postcontent">
+	            <p>
+	              <br/>
+	              No blog tagged {{ tag.name }}
+	            </p>
+	        </div>
+	    </div>
+	{% endfor %}
+    <div class="clear"></div>
+    {% if page_obj.has_next or page_obj.has_previous %}
+    <div class="pagination"> 
+        <div class="moreinfo">
+            {% if page_obj.has_next %}
+                <a href='{% url "blog:blog_tag_details_page" tag.slug page_obj.next_page_number %}'>
+                    Next Entries &raquo;
+                </a>
+            {% endif %}
+            
+            {% if page_obj.has_previous %}
+                <span class='right'>
+                    <a href='{% url "blog:blog_tag_details_page" tag.slug page_obj.previous_page_number %}'>
+                        &laquo; Previous Entries
+                    </a>
+                </span>
+            {% endif %}
+        </div> 
+    </div>
+    {% endif %}
+{% endblock %}

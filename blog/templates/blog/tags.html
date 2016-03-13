@@ -1,0 +1,18 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+    <div>
+            目前共计 {{ tags.count }} 个标签
+    </div>
+    <ul>
+    {% for tag in tags %}
+        <li>
+        {% if tag.slug %}
+        <a href="{% url "blog:blog_tag_details" tag.slug%}">
+            {{ tag.slug }}
+        </a>
+        {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+{%  endblock %}

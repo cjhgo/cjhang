@@ -19,10 +19,12 @@
     {% if post_detail %}
       <p>{{ blog.text|safe }}</p>
     {% else %}
-      <p>{{ blog.text|truncatewords_html:100|safe }} </p>
+        {% if not archive_tag %}
+        <p>{{ blog.text|truncatewords_html:100|safe }} </p>
+        {% endif %}
     {% endif %}
 
-    {% if not post_detail %}
+    {% if not post_detail and not archive_tag  %}
       <a href="{{ blog.get_absolute_url }}" class="moreinfo">more info..</a>
     {% endif %}
 

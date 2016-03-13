@@ -27,7 +27,10 @@ from blog import forms as myforms
 # from blogango.akismet import Akismet, AkismetError
 
 # Create your views here.
-
+class ResumeView(generic.TemplateView):
+    template_name = "blog/resume.html"
+    pass
+resume = ResumeView.as_view()
 class IndexView(generic.ListView):
     template_name = 'blog/index.html'
     context_object_name = 'blogs'
@@ -108,6 +111,61 @@ class DetailView(generic.DetailView):
         return self.render_to_response(context)
 detail = DetailView.as_view()
 
+class BlogArchiveView(generic.ListView):
+    template_name = 'blog/index.html'
+    context_object_name = 'blogs'
+
+    def get_paginate_by(self, queryset):
+        paginate_by = self.kwargs['blogmeta'].blogs_per_page
+        return  paginate_by
+    def get(self, request, *args, **kwargs):
+        blogmeta = BlogMeta.objects.get_blogmeta()
+        if not blogmeta:
+            return HttpResponseRedirect(reverse('blog:blog_install'))
+        self.kwargs['blogmeta'] = blogmeta
+        return super(BlogArchiveView, self).get(request, *args, **kwargs)
+    def get_context_data(self, *args,**kwargs):
+        context = super(BlogArchiveView,self).get_context_data(*args,**kwargs)
+        context['archive_tag'] = 'archive_tag'
+        return  context
+    def get_queryset(self):
+        blogs = Blog.objects.all()
+        if self.kwargs["year"]:
+            blogs = blogs.filter(publish_date__year=self.kwargs['year'])
+            if self.kwargs["month"]:
+                blogs = blogs.filter(publish_date__month=self.kwargs['month'])
+        return blogs
+archive = BlogArchiveView.as_view()
+class BlogTagsView(generic.ListView):
+    context_object_name = "tags"
+    template_name = "blog/tags.html"
+    def get_queryset(self):
+        tags = Tag.objects.all()
+        return tags
+tags = BlogTagsView.as_view()
+class BlogTagDetailView(generic.ListView):
+    template_name = 'blog/tag_details.html'
+    context_object_name = 'blogs'
+
+    def get_paginate_by(self, queryset):
+        paginate_by = self.kwargs['blogmeta'].blogs_per_page
+        return  paginate_by
+    def get(self, request, *args, **kwargs):
+        blogmeta = BlogMeta.objects.get_blogmeta()
+        if not blogmeta:
+            return HttpResponseRedirect(reverse('blog:blog_install'))
+        self.kwargs['blogmeta'] = blogmeta
+        return super(BlogTagDetailView, self).get(request, *args, **kwargs)
+    def get_context_data(self, *args,**kwargs):
+        context = super(BlogTagDetailView,self).get_context_data(*args,**kwargs)
+        context["tag"] = self.kwargs["tag"]
+        return  context
+    def get_queryset(self):
+        tag = get_object_or_404(Tag, slug= self.kwargs['tag_slug'])
+        self.kwargs["tag"]=tag
+        blogs = Blog.objects.filter(tags__in=[tag])
+        return blogs
+tagdetails = BlogTagDetailView.as_view()
 class InstallBlog(generic.TemplateView):
     template_name = 'blog/install.html'
 
@@ -254,4 +312,4 @@ def admin_comment_block(request):
     return HttpResponse(comment.pk)
 #Helper method
 def _is_blog_installed():
-    return Blog.objects.get_blog()
+    return BlogMeta.objects.get_blog()

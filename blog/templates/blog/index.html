@@ -3,6 +3,8 @@
 
 {% block content%}
 <!--BLOG POST STARTS-->
+
+
 {% for blog in blogs %}
     {% include 'blog/blog_snippets.html' %}
 {% empty %}
@@ -10,8 +12,13 @@
         <h1>No posts in blog</h1> 
         <div class="postcontent">
             <p>
+
+              {% if archive_tag %}
+                  no blog in {{ request.path }}
+              {% else %}
               <br/>还没有发布任何博客
               Create a blog entry at '/admin/blogango/blogentry/add/'.
+              {% endif %}
             </p>
         </div>
     </div>

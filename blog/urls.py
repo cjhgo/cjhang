@@ -4,6 +4,7 @@ from . import views
 app_name = 'blog'
 urlpatterns = [
     url(r'^$',views.index,name='index'),
+    url(r'^resume/$',views.resume,name='resume'),
     #page urlconf
     url(r'^page(?P<page>[0-9]+)/$',views.index,name='blog_page'),
     url(r'^install/$', views.install_blog, name='blog_install'),
@@ -12,9 +13,11 @@ urlpatterns = [
     # url(r'^(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>[-\w]+)/'+\
     #     r'#comment-(?P<cmnt_id>[-\w]+)$',
     #     views.detail,name='comment_detail'),
-    url(r'^tag/(?P<tag_slug>[-\w]+)/$',views.index,
-        name='blog_tag_details'),
-    url(r'^archive/(?P<year>\d+)/(?P<month>\w+)/$', views.index, name='blog_archives'),
+    url(r'^tags/$',views.tags,name="blog_tags"),
+    url(r'^tags/(?P<tag_slug>[-\w]+)/$',views.tagdetails,name="blog_tag_details"),
+    url(r'^tags/(?P<tag_slug>[-\w]+)/(?P<page>\d+)/$$',views.tagdetails,name="blog_tag_details_page"),
+    # url(r'^archive/$',views.archive,name='blog_archive'),
+    url(r'^archive/((?P<year>\d+)/((?P<month>\w+)/)?)?$', views.archive, name='blog_archive'),
     
 
     #manage url conf
